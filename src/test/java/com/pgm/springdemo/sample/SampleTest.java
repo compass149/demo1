@@ -3,6 +3,7 @@ package com.pgm.springdemo.sample;
 import com.pgm.springdemo.config.AppConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+
 @Log4j2
 @ExtendWith({SpringExtension.class})
 //@ContextConfiguration(classes = AppConfig.class)
@@ -20,6 +25,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 //@RequiredArgsConstructor
 
 public class SampleTest {
+    @Autowired
+    private DataSource dataSource;
+
     @Autowired(required = false)
     private SampleService sampleService;
 
@@ -27,6 +35,20 @@ public class SampleTest {
     //@Qualifier("myDto1")
     //private final SampleDTO sampleDTO1; //final로 상수화시키면 autoWired하면 오류 뜸 (생성자로 주입받음)
     //private SampleDTO sampleDTO1;// 일반 생성자면 autowired로 주입받음
+
+    @Test
+    public void testService1(){
+        log.info(sampleService);
+        Assertions.assertNotNull(sampleService);
+    }
+    @Test
+    public void ConnectionTest() throws Exception {
+        Connection connection = dataSource.getConnection();
+        log.info(connection);
+        Assertions.assertNotNull(connection);
+        connection.close();
+    }
+
     @Test
     public void setSampleServiceTest() {
         log.info(sampleService);
